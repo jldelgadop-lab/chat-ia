@@ -1,13 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import "./App.css";
 
-//const API_URL = "http://localhost:8000/chat";
-
 const API_URL = process.env.REACT_APP_API_URL;
 
-
 function App() {
-  //const [sessionId, setSessionId] = useState("");
+
   const [sessionId, setSessionId] = useState(
     localStorage.getItem("chat_session_id") || process.env.REACT_APP_DEFAULT_SESSION_ID
   );
