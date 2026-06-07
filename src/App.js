@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import "./App.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -120,57 +120,7 @@ function App() {
     if (e.key === "Enter") sendMessage();
   };
   
-
-
-  useEffect(() => {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-
-      if (!SpeechRecognition) {
-        console.log("SpeechRecognition no soportado");
-        return;
-      }
-
-      const recognition = new SpeechRecognition();
-
-      recognition.lang = "es-ES";
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      recognition.onstart = () => {
-        setListening(true);
-      };
-
-      recognition.onend = () => {
-        setListening(false);
-      };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-
-        setInput(transcript);
-
-        // opcional enviar automático
-        setTimeout(() => {
-          sendVoiceMessage(transcript);
-        }, 500);
-      };
-
-      recognition.onerror = (event) => {
-        console.log("Speech error:", event.error);
-        setListening(false);
-      };
-
-      recognitionRef.current = recognition;
-  }, []);
-      
-  const startListening = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.start();
-    }
-  };
-
-  const sendVoiceMessage = async (voiceText) => {
+  const sendVoiceMessage =useCallback( async (voiceText) => {
 
     const userMessage = {
       role: "user",
@@ -219,7 +169,58 @@ function App() {
     }
 
     setLoading(false);
+  }, [sessionId, usuario]  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        console.log("SpeechRecognition no soportado");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+
+      recognition.lang = "es-ES";
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        setListening(true);
+      };
+
+      recognition.onend = () => {
+        setListening(false);
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+
+        setInput(transcript);
+
+        // opcional enviar automático
+        setTimeout(() => {
+          sendVoiceMessage(transcript);
+        }, 500);
+      };
+
+      recognition.onerror = (event) => {
+        console.log("Speech error:", event.error);
+        setListening(false);
+      };
+
+      recognitionRef.current = recognition;
+  }, [sendVoiceMessage]);
+      
+  const startListening = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.start();
+    }
   };
+
+  
 
 
   return (
