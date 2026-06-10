@@ -93,8 +93,40 @@ function App() {
       }
 
       const botMessage = { role: "bot", text: data.response };
-      const utterance = new SpeechSynthesisUtterance(data.response);
+      const utterance = new SpeechSynthesisUtterance(data.response);      
+      const voices = window.speechSynthesis.getVoices();
+
+      console.log("VOCES DISPONIBLES:");
+
+      //voices.forEach(v => {
+      //  console.log(v.name, "-", v.lang);
+      //});
+      //const voz = voices.find(
+      //  v => v.lang.startsWith("es") && v.name.includes("Mónica")
+      //);
+
+      const preferredVoices = [
+        "Mónica",
+        "Paulina",
+        "Microsoft Helena",
+        "Microsoft Laura",
+        "Google español"
+      ];
+      const voz =
+        voices.find(v =>
+          preferredVoices.some(name =>
+            v.name.includes(name)
+          )
+        ) ||
+        voices.find(v => v.lang.startsWith("es"));
+
+      if (voz) {
+        utterance.voice = voz;
+      }
       utterance.lang = "es-ES";
+      utterance.rate = 0.95;
+      utterance.pitch = 1.1;
+      utterance.volume = 1;    
       window.speechSynthesis.speak(utterance);
 
       setMessages((prev) => [...prev, botMessage]);
@@ -152,7 +184,39 @@ function App() {
         text: data.response
       };
       const utterance = new SpeechSynthesisUtterance(data.response);
+      const voices = window.speechSynthesis.getVoices();
+      console.log("VOCES DISPONIBLES:");
+
+      //voices.forEach(v => {
+      //  console.log(v.name, "-", v.lang);
+      //});
+      //const voz = voices.find(
+      //  v => v.lang.startsWith("es") && v.name.includes("Mónica")
+      //);
+
+      const preferredVoices = [
+        "Mónica",
+        "Paulina",
+        "Microsoft Helena",
+        "Microsoft Laura",
+        "Google español"
+      ];
+      const voz =
+        voices.find(v =>
+          preferredVoices.some(name =>
+            v.name.includes(name)
+          )
+        ) ||
+        voices.find(v => v.lang.startsWith("es"));
+
+      if (voz) {
+        utterance.voice = voz;
+      }
       utterance.lang = "es-ES";
+      utterance.rate = 0.95;
+      utterance.pitch = 1.1;
+      utterance.volume = 1;
+
       window.speechSynthesis.speak(utterance);
 
       setMessages((prev) => [...prev, botMessage]);
